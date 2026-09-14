@@ -20,4 +20,17 @@ Each module is built independently from its own `src/<name>-edit.ofn`
 via `scripts/build-module.sh <module-dir> <name> <output-name>` (requires
 the `robot` CLI on `PATH`).
 
+The three procedure modules (`mikadiv-vib/`, `mikadiv-fm/`, `kafe/`) are
+each further split into five layers -- `concepts/`, `structure/`,
+`rules/`, `sources/`, `abox/` -- rather than being a single flat ontology
+like the four vocabulary modules above; see each module's own root
+`README.md` for what each layer holds. Because of this split, `build-module.sh`'s
+`<module-dir>` argument for these three is a nested path naming the
+specific layer being built, e.g. `mikadiv-vib/concepts`, not just
+`mikadiv-vib`.
+
+See [`CONVENTIONS.md`](CONVENTIONS.md) for authoring conventions kept from
+this repo's predecessor repos (label/annotation usage, ID assignment) that
+apply across every module here.
+
 Licensed [CC BY 4.0](LICENSE).
