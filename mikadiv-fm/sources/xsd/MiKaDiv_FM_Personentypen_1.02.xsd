@@ -1,0 +1,838 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:fmpers="http://www.itzbund.de/MiKaDiv/FMPers/1.02"
+  xmlns:std="http://www.itzbund.de/MiKaDiv/FMStd/1.02" targetNamespace="http://www.itzbund.de/MiKaDiv/FMPers/1.02" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMStd/1.02" schemaLocation="./MiKaDiv_FM_Standardtypen_1.02.xsd"/>
+
+  <xs:complexType name="PersonBasisType" abstract="true">
+    <xs:annotation>
+      <xs:documentation>Abstrakter Typ für eine einzelne Person, die eine natürliche oder nicht-natürliche Person ist. Bildet die Basis für Kontopersonen, Gläubiger und Depotinhaber sowie die Vertreter.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Anschrift" type="std:AdresseType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Die Anschrift der Person.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Natürliche Personen -->
+  <xs:complexType name="PersonNatDatenType" abstract="true">
+    <xs:annotation>
+      <xs:documentation>Abstrakter Typ für die Beschreibung einer natürlichen Person.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmpers:PersonBasisType">
+        <xs:attribute name="Geburtsdatum" type="std:GeburtsdatumType" use="required">
+          <xs:annotation>
+            <xs:documentation>Das Geburtsdatum der Person im Format jjjj-mm-tt, das (teil-)unbekannte Daten erlaubt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Name" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Name der natürlichen Person.</xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="std:Name45Type">
+              <xs:minLength value="1"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Vorname" type="std:Name45Type" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Vorname der natürlichen Person.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Titel" type="std:Name20Type" use="optional">
+          <xs:annotation>
+            <xs:documentation>Der Titel der natürlichen Person.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Vorsatzwort" type="std:Name20Type" use="optional">
+          <xs:annotation>
+            <xs:documentation>Das Vorsatzwort für die natürliche Person.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Namenszusatz" type="std:Name20Type" use="optional">
+          <xs:annotation>
+            <xs:documentation>Der Namenszusatz für die natürliche Person.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="PersonNatIdInlandType">
+    <xs:annotation>
+      <xs:documentation>Typ für die Beschreibung einer unbeschränkt steuerpflichtigen natürlichen Person inkl. verpflichtender deutscher Identifikationsnummer.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmpers:PersonNatDatenType">
+        <xs:attribute name="IdNr" type="std:IdNrType" use="required">
+          <xs:annotation>
+            <xs:documentation>Die Identifikationsnummer der natürlichen Person.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="PersonNatIdAuslandType">
+    <xs:annotation>
+      <xs:documentation>Typ für die Beschreibung einer beschränkt steuerpflichtigen natürlichen Person inkl. verpflichtender deutscher Identifikationsnummer.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmpers:PersonNatDatenType">
+        <xs:attribute name="IdNr" type="std:IdNrType" use="required">
+          <xs:annotation>
+            <xs:documentation>Die Identifikationsnummer der natürlichen Person.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="PersonNatAuslandStNrType">
+    <xs:annotation>
+      <xs:documentation>Typ für die Beschreibung einer beschränkt steuerpflichtigen natürlichen Person inkl. verpflichtendem ausländischen Steueridentifikationsmerkmal.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmpers:PersonNatDatenType">
+        <xs:attribute name="AuslandIdNr" type="std:AuslandSteuerNr" use="required">
+          <xs:annotation>
+            <xs:documentation>Vom Ansässigkeitsstaat vergebenes Steueridentifikationsmerkmal.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <!-- Natürliche Person 45b -->
+  <xs:simpleType name="AnsaessigkeitsstaatType">
+    <xs:annotation>
+      <xs:documentation>Der Ansässigkeitsstaat gemäß ISO-Code 3166 Alpha-2.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:NameType">
+      <xs:length value="2"/>
+      <xs:pattern value="[a-zA-Z]{2}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="PersonNatIdInland45bType">
+    <xs:annotation>
+      <xs:documentation>Typ für die Beschreibung einer unbeschränkt steuerpflichtigen natürlichen Person inkl. verpflichtender deutscher Identifikationsnummer.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmpers:PersonNatIdInlandType">
+        <xs:attribute name="Ansaessigkeitsstaat" type="fmpers:AnsaessigkeitsstaatType" use="optional">
+          <xs:annotation>
+            <xs:documentation>Der Ansässigkeitsstaat gemäß ISO-Code 3166 Alpha-2.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="PersonNatIdAusland45bType">
+    <xs:annotation>
+      <xs:documentation>Typ für die Beschreibung einer beschränkt steuerpflichtigen natürlichen Person inkl. verpflichtender deutscher Identifikationsnummer.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmpers:PersonNatIdAuslandType">
+        <xs:attribute name="Ansaessigkeitsstaat" type="fmpers:AnsaessigkeitsstaatType" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Ansässigkeitsstaat gemäß ISO-Code 3166 Alpha-2.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="PersonNatAuslandStNr45bType">
+    <xs:annotation>
+      <xs:documentation>Typ für die Beschreibung einer beschränkt steuerpflichtigen natürlichen Person inkl. verpflichtendem ausländischen Steueridentifikationsmerkmal.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmpers:PersonNatAuslandStNrType">
+        <xs:attribute name="Ansaessigkeitsstaat" type="fmpers:AnsaessigkeitsstaatType" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Ansässigkeitsstaat gemäß ISO-Code 3166 Alpha-2.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+  <!-- Nicht natürliche Personen -->
+  <xs:complexType name="PersonNichtNatType" abstract="true">
+    <xs:annotation>
+      <xs:documentation>Abstrakter Typ für die Beschreibung einer nicht-natürlichen Person.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmpers:PersonBasisType">
+        <xs:attribute name="Bezeichnung" type="std:Name256Type" use="required">
+          <xs:annotation>
+            <xs:documentation>Die Bezeichnung der nicht-natürlichen Person.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="PersonNichtNatWidInlandType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine nicht-natürliche Person, die über ihre deutsche WIdNr identifiziert werden kann.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmpers:PersonNichtNatType">
+        <xs:attribute name="WID" type="std:WIDType" use="required">
+          <xs:annotation>
+            <xs:documentation>Die deutsche Wirtschafts-Identifikationsnummer der nicht-natürlichen Person.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="PersonNichtNatStNrInlandType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine nicht-natürliche Person mit deutscher Steuernummer, wenn keine WIdNr vergeben wurde.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmpers:PersonNichtNatType">
+        <xs:attribute name="Steuernummer" type="std:SteuernummerType" use="required">
+          <xs:annotation>
+            <xs:documentation>Die deutsche Steuernummer der nicht-natürlichen Person.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="PersonNichtNatAuslandType" abstract="true">
+    <xs:annotation>
+      <xs:documentation>Abstrakter Typ mit den Identifikationsmerkmalen WIdNr, Steuernummer, LEI und EUID, bei dem mindestens ein Identifikationsmerkmal angegeben werden muss.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmpers:PersonNichtNatType">
+        <xs:attribute name="WID" type="std:WIDType" use="optional">
+          <xs:annotation>
+            <xs:documentation>Die deutsche Wirtschafts-Identifikationsnummer der nicht-natürlichen Person.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Steuernummer" type="std:SteuernummerType" use="optional">
+          <xs:annotation>
+            <xs:documentation>Die Steuernummer der nicht-natürlichen Person.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="LEI" type="std:LEIType" use="optional">
+          <xs:annotation>
+            <xs:documentation>Die LEI der Person.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="EUID" type="std:EUIDType" use="optional">
+          <xs:annotation>
+            <xs:documentation>Die EUID der Person.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="PersonNichtNatAuslandStNrType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine nicht-natürliche Person mit ausländischer Steuernummer.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmpers:PersonNichtNatAuslandType">
+        <xs:attribute name="AuslandSteuerNr" type="std:AuslandSteuerNr" use="required">
+          <xs:annotation>
+            <xs:documentation>Vom Ansässigkeitsstaat vergebenes Steueridentifikationsmerkmal.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="PersonNichtNatRechtsformAuslandType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine nicht-natürliche Person mit Rechtsform und Gründungsdatum, wenn kein Steueridentifikationsmerkmal durch den Ansässigkeitsstaat vergeben wurde.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmpers:PersonNichtNatAuslandType">
+        <xs:attribute name="Rechtsform" type="std:RechtsformType" use="required">
+          <xs:annotation>
+            <xs:documentation>Die Rechtsform der nicht-natürlichen Person mit Lang- und Kurzform.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Gruendungsdatum" type="xs:date" use="required">
+          <xs:annotation>
+            <xs:documentation>Datum des Gründungsaktes.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <!-- Nicht Natürliche Personen 45b -->
+  <xs:complexType name="PersonNichtNatWidInland45bType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine nicht-natürliche Person, die über ihre deutsche WIdNr identifiziert werden kann.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmpers:PersonNichtNatWidInlandType">
+        <xs:attribute name="Ansaessigkeitsstaat" type="fmpers:AnsaessigkeitsstaatType" use="optional">
+          <xs:annotation>
+            <xs:documentation>Der Ansässigkeitsstaat gemäß ISO-Code 3166 Alpha-2.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="PersonNichtNatStNrInlandType45bType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine nicht-natürliche Person mit deutscher Steuernummer, wenn keine WIdNr vergeben wurde.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmpers:PersonNichtNatStNrInlandType">
+        <xs:attribute name="Ansaessigkeitsstaat" type="fmpers:AnsaessigkeitsstaatType" use="optional">
+          <xs:annotation>
+            <xs:documentation>Der Ansässigkeitsstaat gemäß ISO-Code 3166 Alpha-2.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="PersonNichtNatAuslandStNr45bType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine nicht-natürliche Person zur Angabe der ausländischen Steuernummer und des Ansässigkeitsstaates.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmpers:PersonNichtNatAuslandStNrType">
+        <xs:attribute name="Ansaessigkeitsstaat" type="fmpers:AnsaessigkeitsstaatType" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Ansässigkeitsstaat gemäß ISO-Code 3166 Alpha-2.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="PersonNichtNatRechtsformAusland45bType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine nicht-natürliche Person mit Rechtsform, Gründungsdatum und Ansässigkeitsstaat, wenn kein Steueridentifikationsmerkmal durch den Ansässigkeitsstaat vergeben wurde.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmpers:PersonNichtNatRechtsformAuslandType">
+        <xs:attribute name="Ansaessigkeitsstaat" type="fmpers:AnsaessigkeitsstaatType" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Ansässigkeitsstaat gemäß ISO-Code 3166 Alpha-2.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- Vertreter -->
+  <xs:simpleType name="KontovertretungType">
+    <xs:annotation>
+      <xs:documentation>Typ zur Definition welcher Art die Vertretung ist.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="TH">
+        <xs:annotation>
+          <xs:documentation>Treuhänder</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="PS">
+        <xs:annotation>
+          <xs:documentation>Pfandschuldner</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="NB">
+        <xs:annotation>
+          <xs:documentation>Nießbrauchbesteller</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="VertreterMitAdresseChoiceType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine natürliche oder nicht-natürliche einzelne Kontoperson, die als Vertreter für eine andere Kontoperson agiert.</xs:documentation>
+    </xs:annotation>
+    <xs:choice>
+      <xs:element name="NatInlandMitId" type="fmpers:PersonNatIdInlandType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Element für eine unbeschränkt steuerpflichtige natürliche Person, inkl. verpflichtender deutscher Identifikationsnummer.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NatAuslandMitId" type="fmpers:PersonNatIdAuslandType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Element für eine beschränkt steuerpflichtige natürliche Person inkl. verpflichtender deutscher Identifikationsnummer.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NatAuslandMitStNr" type="fmpers:PersonNatAuslandStNrType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Element für eine beschränkt steuerpflichtige natürliche Person, inkl. verpflichtendem ausländischen Identifikationsmerkmal.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NichtNatInlandAusland" type="fmpers:VertreterNichtNatType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Element für eine nicht-natürliche Person, mit inländischer oder ausländischer Anschrift.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:choice>
+    <xs:attribute name="Art" type="fmpers:KontovertretungType" use="required">
+      <xs:annotation>
+        <xs:documentation>Art der Vertretung</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+  <xs:complexType name="VertreterNichtNatType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine nicht-natürliche einzelne Kontoperson, die als Vertreter für eine andere Kontoperson agiert. Es muss mindestens ein Identifikationsmerkmal angegeben werden.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmpers:PersonNichtNatAuslandType">
+        <xs:attribute name="AuslandSteuerNr" type="std:AuslandSteuerNr" use="optional">
+          <xs:annotation>
+            <xs:documentation>Vom Ansässigkeitsstaat vergebenes Steueridentifikationsmerkmal.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="BZStSteuernummer" type="std:BZStSteuernummerType" use="optional">
+          <xs:annotation>
+            <xs:documentation>Gilt nur für Spezial-Investmentfonds, die steuerlich beim BZSt geführt werden, als Vertreter eines Anlegers.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- Verwahrstelle -->
+  <xs:complexType name="PersonVerwahrstelleBasisType">
+    <xs:annotation>
+      <xs:documentation>Typ für die Beschreibung einer (Zwischen-)Verwahrstelle.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="std:IdMerkmalNNPType">
+        <xs:sequence>
+          <xs:element name="Anschrift" type="std:AdresseType" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Die Anschrift der Verwahrstelle.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Ansaessigkeitsstaat" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Ansässigkeitsstaat der Verwahrstelle gemäß ISO-Code 3166 Alpha-2.</xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="std:NameType">
+              <xs:length value="2"/>
+              <xs:pattern value="[a-zA-Z]{2}"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Bezeichnung" type="std:Name256Type" use="required">
+          <xs:annotation>
+            <xs:documentation>Die Bezeichnung der Verwahrstelle.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="PersonVerwahrstelleType">
+    <xs:annotation>
+      <xs:documentation>Typ für die Beschreibung einer (Zwischen-)Verwahrstelle.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmpers:PersonVerwahrstelleBasisType">
+        <xs:attribute name="Kontonummer" type="std:KontonummerType" use="required">
+          <xs:annotation>
+            <xs:documentation>Die Kontonummer des Depotkontos der Verwahrstelle.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="DepotkontoArt" type="std:DepotkontoEnumType" use="required">
+          <xs:annotation>
+            <xs:documentation>Die Art des Depotkontos der Verwahrstelle.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="PersonDepotfuehrendeStelleType">
+    <xs:annotation>
+      <xs:documentation>Typ für die Beschreibung einer depotführenden Verwahrstelle.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmpers:PersonVerwahrstelleBasisType"/>
+    </xs:complexContent>
+  </xs:complexType>
+  <!-- Sonstige Gemeinschaft -->
+  <xs:complexType name="SonstigeGemeinschaftType">
+    <xs:annotation>
+      <xs:documentation>Besondere Ausprägung einer nicht-natürlichen Person, bei der mehrere natürliche und/oder nicht-natürliche Miteigentümer eine (Eigentums-)Gemeinschaft (bspw. Gesamthand- oder Bruchteilsgemeinschaft) bilden.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Miteigentuemer" type="fmpers:PersonMitAdresseChoiceType" minOccurs="2" maxOccurs="10">
+        <xs:annotation>
+          <xs:documentation>Miteigentümer der Gemeinschaft.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SonstigeGemeinschaft45bType">
+    <xs:annotation>
+      <xs:documentation>Besondere Ausprägung einer nicht-natürlichen Person, bei der mehrere natürliche und/oder nicht-natürliche Miteigentümer eine (Eigentums-)Gemeinschaft (bspw. Gesamthand- oder Bruchteilsgemeinschaft) bilden.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Miteigentuemer" type="fmpers:PersonMitAdresse45bChoiceType" minOccurs="2" maxOccurs="10">
+        <xs:annotation>
+          <xs:documentation>Miteigentümer der Gemeinschaft.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <!--Sonstige Personen -->
+  <xs:complexType name="AusschuettendeGesellschaftType">
+    <xs:annotation>
+      <xs:documentation>Nur bei Angaben zum Kapitalertrag (Heading D).</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="std:IdMerkmalNNPType">
+        <xs:sequence>
+          <xs:element name="Adresse" type="std:AdresseType" minOccurs="0" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Anschrift der ausschüttenden Gesellschaft.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Bezeichnung" type="std:Name256Type" use="required">
+          <xs:annotation>
+            <xs:documentation>Die Bezeichnung der ausschüttenden Gesellschaft.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="HinterlegungsstelleType">
+    <xs:annotation>
+      <xs:documentation>Typ für die Hinterlegungsstelle.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="std:IdMerkmalNNPType">
+        <xs:attribute name="Bezeichnung" type="std:Name256Type" use="required">
+          <xs:annotation>
+            <xs:documentation>Bezeichnung der Hinterlegungsstelle.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- Kontopersonen-->
+  <xs:simpleType name="PersonArtType">
+    <xs:annotation>
+      <xs:documentation>Typ zur Definition der Art der Person.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="GL">
+        <xs:annotation>
+          <xs:documentation>Gläubiger</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DI">
+        <xs:annotation>
+          <xs:documentation>Depotinhaber</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="PersonMitAdresseChoiceType">
+    <xs:annotation>
+      <xs:documentation>Der Typ schränkt die Wahl der Gläubiger und Depotinhaber, im Kontext von Meldeart 22, auf die gültigen Personentypen ein.</xs:documentation>
+    </xs:annotation>
+    <xs:choice>
+      <xs:element name="NatInlandMitId" type="fmpers:PersonNatIdInlandType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Element für eine unbeschränkt steuerpflichtige natürliche Person, inkl. verpflichtender deutscher Identifikationsnummer.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NatAuslandMitId" type="fmpers:PersonNatIdAuslandType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Element für eine beschränkt steuerpflichtige natürliche Person inkl. verpflichtender deutscher Identifikationsnummer.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NatAuslandMitStNr" type="fmpers:PersonNatAuslandStNrType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Element für eine beschränkt steuerpflichtige natürliche Person inkl. verpflichtendem ausländischen Identifikationsmerkmal.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NichtNatInlandMitWid" type="fmpers:PersonNichtNatWidInlandType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Element für eine nicht-natürliche Person, die über ihre deutsche WIdNr identifiziert werden kann.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NichtNatInlandMitStNr" type="fmpers:PersonNichtNatStNrInlandType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Element für eine nicht-natürliche Person mit deutscher Steuernummer, wenn keine WIdNr vergeben wurde.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NichtNatAuslandMitStNr" type="fmpers:PersonNichtNatAuslandStNrType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Element für eine nicht-natürliche Person zur Angabe der ausländischen Steuernummer und des Ansässigkeitsstaates.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NichtNatAuslandNoStNr" type="fmpers:PersonNichtNatRechtsformAuslandType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Element für eine nicht-natürliche Person mit Rechtsform und Gründungsdatum, wenn kein Steueridentifikationsmerkmal durch den Ansässigkeitsstaat vergeben wurde.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:choice>
+  </xs:complexType>
+  <xs:complexType name="PersonMitAdresse45bChoiceType">
+    <xs:annotation>
+      <xs:documentation>Der Typ schränkt die Wahl der Kontoperson, im Kontext von Meldearten 11, 13 und ERG, auf die gültigen Personentypen mit der verpflichtenden Angabe des Ansässigkeitsstaats ein.</xs:documentation>
+    </xs:annotation>
+    <xs:choice>
+      <xs:element name="NatInlandMitId" type="fmpers:PersonNatIdInland45bType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Element für eine unbeschränkt steuerpflichtige natürliche Person, inkl. verpflichtender deutscher Identifikationsnummer.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NatAuslandMitId" type="fmpers:PersonNatIdAusland45bType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Element für eine beschränkt steuerpflichtige natürliche Person inkl. verpflichtender deutscher Identifikationsnummer.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NatAuslandMitStNr" type="fmpers:PersonNatAuslandStNr45bType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Element für eine beschränkt steuerpflichtige natürliche Person inkl. verpflichtendem ausländischen Identifikationsmerkmal.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NichtNatInlandMitWid" type="fmpers:PersonNichtNatWidInland45bType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Element für eine nicht-natürliche Person, die über ihre deutsche WIdNr identifiziert werden kann.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NichtNatInlandMitStNr" type="fmpers:PersonNichtNatStNrInlandType45bType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Element für eine nicht-natürliche Person mit deutscher Steuernummer, wenn keine WIdNr vergeben wurde.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NichtNatAuslandMitStNr" type="fmpers:PersonNichtNatAuslandStNr45bType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Element für eine nicht-natürliche Person zur Angabe der ausländischen Steuernummer und des Ansässigkeitsstaates.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NichtNatAuslandNoStNr" type="fmpers:PersonNichtNatRechtsformAusland45bType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Element für eine nicht-natürliche Person mit Rechtsform und Gründungsdatum, wenn kein Steueridentifikationsmerkmal durch den Ansässigkeitsstaat vergeben wurde.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:choice>
+  </xs:complexType>
+  <xs:complexType name="PersonType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine Person, auf die die Bescheinigung ausgestellt wurde, inkl. Art und ihrer Anschrift.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:choice>
+        <xs:annotation>
+          <xs:documentation>Angabe, ob es sich um eine einzelne (natürliche oder nicht-natürliche) Person oder eine sonstige Gemeinschaft handelt.</xs:documentation>
+        </xs:annotation>
+        <xs:element name="EinzelPerson" type="fmpers:PersonMitAdresseChoiceType" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="SonstigeGemeinschaft" type="fmpers:SonstigeGemeinschaftType" minOccurs="1" maxOccurs="1"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PersonMitArt45bType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine Person, auf die die Bescheinigung ausgestellt wurde, inkl. Art und ihrer Anschrift.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:choice>
+        <xs:annotation>
+          <xs:documentation>Angabe, ob es sich um eine einzelne (natürliche oder nicht-natürliche) Person oder eine sonstige Gemeinschaft handelt.</xs:documentation>
+        </xs:annotation>
+        <xs:element name="EinzelPerson" type="fmpers:PersonMitAdresse45bChoiceType" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="SonstigeGemeinschaft" type="fmpers:SonstigeGemeinschaft45bType" minOccurs="1" maxOccurs="1"/>
+      </xs:choice>
+    </xs:sequence>
+    <xs:attribute name="Art" type="fmpers:PersonArtType" use="required">
+      <xs:annotation>
+        <xs:documentation>Art der Person</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:complexType name="KontopersonUndVertreterType">
+    <xs:annotation>
+      <xs:documentation>Typ zur Angabe von mehreren Kontopersonen.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Kontovertretungen" minOccurs="0" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Liste aller Personen, die als Vertretung für die Person, auf die die Steuerbescheinigung ausgestellt ist, auftreten.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Vertreter" type="fmpers:VertreterMitAdresseChoiceType" minOccurs="1" maxOccurs="5">
+              <xs:annotation>
+                <xs:documentation>Typ zur Auflistung von bis zu fünf natürlichen oder nicht-natürlichen einzelnen Kontopersonen, die jeweils als Vertreter für eine andere Kontoperson agiert.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Personen" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Liste aller Personen</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Person" type="fmpers:PersonMitArt45bType" minOccurs="1" maxOccurs="2"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="Depotverhaeltnis" type="std:DepotverhaeltnisEnumType" use="optional">
+      <xs:annotation>
+        <xs:documentation>Art des Depotverhältnisses</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:complexType name="GlaeubigerOderDepotinhaberType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine Liste an Gläubigern oder alternativ einem Depotinhaber.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:choice>
+        <xs:element name="GlaeubigerListe" minOccurs="1" maxOccurs="1">
+          <xs:annotation>
+            <xs:documentation>Liste aller Gläubiger.</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Glaeubiger" type="fmpers:PersonType" minOccurs="1" maxOccurs="2"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Depotinhaber" type="fmpers:PersonType" minOccurs="1" maxOccurs="1"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+  <!-- Datenlieferant / Datenübermittler -->
+  <xs:complexType name="ZertifizierteStelleType">
+    <xs:annotation>
+      <xs:documentation>Typ für einen Datenübermittler der Art zertifizierte Stelle.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="std:IdMerkmalNNPType">
+        <xs:sequence>
+          <xs:element name="Adresse" type="std:AdresseType" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Die Anschrift der zertifizierten Stelle.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Bezeichnung" type="std:Name256Type" use="required">
+          <xs:annotation>
+            <xs:documentation>Die Bezeichnung der zertifizierten Stelle.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Zulassungsnummer" type="std:ZulassungsnummerType" use="required">
+          <xs:annotation>
+            <xs:documentation>Die Zulassungsnummer der zertifizierten Stelle.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="eMail" type="std:MailType" use="required">
+          <xs:annotation>
+            <xs:documentation>Die E-Mail der zertifizierten Stelle.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Telefonnummer" type="std:TelefonnummerType" use="required">
+          <xs:annotation>
+            <xs:documentation>Die Telefonnummer der zertifizierten Stelle.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="MeldepflichtigeStelleType">
+    <xs:annotation>
+      <xs:documentation>Typ für einen Datenübermittler der Art meldepflichtige Stelle, bei dem mindestens ein Identifikationsmerkmal angegeben werden muss.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Adresse" type="std:AdresseType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Die Anschrift der meldepflichtigen Stelle.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="WIdNr" type="std:WIDType" use="optional">
+      <xs:annotation>
+        <xs:documentation>Die WIdNr der meldepflichtigen Stelle.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="Steuernummer" type="std:SteuernummerType" use="optional">
+      <xs:annotation>
+        <xs:documentation>Die Steuernummer der meldepflichtigen Stelle.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="Zulassungsnummer" type="std:ZulassungsnummerType" use="required">
+      <xs:annotation>
+        <xs:documentation>Die Zulassungsnummer der meldepflichtigen Stelle.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="Bezeichnung" type="std:Name256Type" use="required">
+      <xs:annotation>
+        <xs:documentation>Die Bezeichnung der meldepflichtigen Stelle.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="eMail" type="std:MailType" use="required">
+      <xs:annotation>
+        <xs:documentation>Die E-Mail der meldepflichtigen Stelle.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="Telefonnummer" type="std:TelefonnummerType" use="required">
+      <xs:annotation>
+        <xs:documentation>Die Telefonnummer der meldepflichtigen Stelle.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+  <xs:complexType name="DienstleisterType">
+    <xs:annotation>
+      <xs:documentation>Typ für einen Datenübermittler der Art Dienstleister.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="std:IdMerkmalNNPType">
+        <xs:sequence>
+          <xs:element name="Adresse" type="std:AdresseType" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Die Anschrift des Dienstleisters.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Bezeichnung" type="std:Name256Type" use="required">
+          <xs:annotation>
+            <xs:documentation>Die Bezeichnung des Dienstleisters.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Zulassungsnummer" type="std:ZulassungsnummerType" use="required">
+          <xs:annotation>
+            <xs:documentation>Die Zulassungsnummer des Dienstleisters.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="eMail" type="std:MailType" use="required">
+          <xs:annotation>
+            <xs:documentation>Die E-Mail des Dienstleisters.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Telefonnummer" type="std:TelefonnummerType" use="required">
+          <xs:annotation>
+            <xs:documentation>Die Telefonnummer des Dienstleisters.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>

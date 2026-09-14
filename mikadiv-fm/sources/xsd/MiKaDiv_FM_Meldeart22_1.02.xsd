@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mit XMLSpy v2022 (x64) (http://www.altova.com) von Company="Informationstechnikzentrum Bund (ITZBund) (Informationstechnikzentrum Bund (ITZBund)) bearbeitet -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:fmma22="http://www.itzbund.de/MiKaDiv/FMMa22/1.02"
+  xmlns:fmmabase="http://www.itzbund.de/MiKaDiv/FMMaBase/1.02"
+  xmlns:fmpers="http://www.itzbund.de/MiKaDiv/FMPers/1.02"
+  xmlns:std="http://www.itzbund.de/MiKaDiv/FMStd/1.02"
+  xmlns:fmfach="http://www.itzbund.de/MiKaDiv/FMFach/1.02" targetNamespace="http://www.itzbund.de/MiKaDiv/FMMa22/1.02" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMStd/1.02" schemaLocation="./MiKaDiv_FM_Standardtypen_1.02.xsd"/>
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMPers/1.02" schemaLocation="./MiKaDiv_FM_Personentypen_1.02.xsd"/>
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMFach/1.02" schemaLocation="./MiKaDiv_FM_Fachtypen_1.02.xsd"/>
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMMaBase/1.02" schemaLocation="./MiKaDiv_FM_MeldeartenBasis_1.02.xsd"/>
+  <xs:complexType name="Meldeart22">
+    <xs:annotation>
+      <xs:documentation>Meldung nach § 45c Absatz 2 EStG.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmmabase:SelbststaendigeMeldungType">
+        <xs:sequence>
+          <xs:element name="Kontopersonen" type="fmpers:GlaeubigerOderDepotinhaberType" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Die Kontopersonen der Meldung.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Paymentlines" type="fmma22:PaymentlineListeMa22Type" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Angabe aller Paymentlines dieser Meldung.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="PaymentlineListeMa22Type">
+    <xs:annotation>
+      <xs:documentation>Typ für eine Liste von Paymentlines.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Paymentline" type="fmma22:PaymentlineMa22Type" minOccurs="1" maxOccurs="1000"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="PaymentlineMa22Type">
+    <xs:annotation>
+      <xs:documentation>Erweiterung des Basistyps um den meldeartspezifischen Zahlungstag.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmfach:PaymentlineBasisType">
+        <xs:sequence>
+          <xs:element name="Kapitalertrag" type="fmma22:ZahlungstagMa22Type" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>§ 45c Absatz 2 EStG.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ZahlungstagMa22Type">
+    <xs:annotation>
+      <xs:documentation>Typ zur Übermittlung von Zahlungstaginformationen dieser Meldeart.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="EinbehalteneSteuern" type="fmfach:SteuerangabenType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Liste aller einbehaltenen Steuern.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="Kontonummer" type="std:KontonummerType" use="required">
+      <xs:annotation>
+        <xs:documentation>Nummer des Kontos oder Depots, auf dem die Wertpapiere verwahrt werden.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="SummeKapitalertrag" type="std:Dezimal14dot2Type" use="required">
+      <xs:annotation>
+        <xs:documentation>Summe der in einem Kalenderjahr gutgeschriebenen Kapitalerträge (§ 45c Absatz 2 Satz 1 Nummer 3 EStG).</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="StueckzahlKapitalertraege" type="std:WertpapierStueckzahlType" use="required">
+      <xs:annotation>
+        <xs:documentation>Stückzahl der Wertpapiere, die den gutgeschriebenen Kapitalerträgen zu Grunde liegen (siehe auch BMF-Schreiben Einzelfragen zur Datenübermittlung nach Maßgabe des § 45b und § 45c EStG vom 22.April 2025, Rz 117 ff.).</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="SummeKompensationszahlungenGutgeschrieben" type="std:Dezimal14dot2Type" use="required">
+      <xs:annotation>
+        <xs:documentation>Summe der in einem Kalenderjahr gutgeschriebenen Kompensationszahlungen (§ 45c Absatz 2 Satz 1 Nummer 4 EStG).</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="StueckzahlKompensationszahlungenGutgeschrieben" type="std:WertpapierStueckzahlType" use="required">
+      <xs:annotation>
+        <xs:documentation>Stückzahl der Wertpapiere, die den gutgeschriebenen Kompensationszahlungen zu Grunde liegen (siehe auch BMF-Schreiben Einzelfragen zur Datenübermittlung nach Maßgabe des § 45b und § 45c EStG vom 22.April 2025, Rz 117 ff.).</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="SummeKompensationszahlungenBelastet" type="std:Dezimal14dot2Type" use="required">
+      <xs:annotation>
+        <xs:documentation>Summe der in einem Kalenderjahr belasteten Kompensationszahlungen (§ 45c Absatz 2 Satz 1 Nummer 5 EStG).</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="StueckzahlKompensationszahlungenBelastet" type="std:WertpapierStueckzahlType" use="required">
+      <xs:annotation>
+        <xs:documentation>Stückzahl der Wertpapiere, die den belasteten Kompensationszahlungen zu Grunde liegen (siehe auch BMF-Schreiben Einzelfragen zur Datenübermittlung nach Maßgabe des § 45b und § 45c EStG vom 22.April 2025, Rz 117 ff.).</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="Saldo" type="std:Dezimal14dot2Type" use="required">
+      <xs:annotation>
+        <xs:documentation>Saldo aus der Summe der gutgeschriebenen Kapitalerträge und der Summe der gutgeschriebenen Kompensationszahlungen und der Summe der belasteten Kompensationszahlungen (§ 45c Absatz 2 Satz 1 Nummer 6 EStG).</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="StueckzahlGesamt" type="std:WertpapierStueckzahlType" use="required">
+      <xs:annotation>
+        <xs:documentation>Stückzahl der im Depot befindlichen Wertpapiere der Wertpapiergattung.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="StueckzahlOhneDividendenregulierung" type="std:WertpapierStueckzahlType" use="optional">
+      <xs:annotation>
+        <xs:documentation>Stückzahl der Wertpapiere, für die keine Dividendenregulierung vorgenommen wurde (§ 45c Absatz 2 Satz 1 Nummer 8 EStG).</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+</xs:schema>

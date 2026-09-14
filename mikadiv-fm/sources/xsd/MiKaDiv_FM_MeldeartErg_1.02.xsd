@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mit XMLSpy v2022 (x64) (http://www.altova.com) von Company="Informationstechnikzentrum Bund (ITZBund) (Informationstechnikzentrum Bund (ITZBund)) bearbeitet -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:fmmabase="http://www.itzbund.de/MiKaDiv/FMMaBase/1.02"
+  xmlns:std="http://www.itzbund.de/MiKaDiv/FMStd/1.02" targetNamespace="http://www.itzbund.de/MiKaDiv/FMMaErg/1.02" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMStd/1.02" schemaLocation="./MiKaDiv_FM_Standardtypen_1.02.xsd"/>
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMMaBase/1.02" schemaLocation="./MiKaDiv_FM_MeldeartenBasis_1.02.xsd"/>
+  <xs:complexType name="MeldeartErg">
+    <xs:annotation>
+      <xs:documentation>Meldungen über ergänzende Steuerbescheinigung.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmmabase:SelbststaendigeMeldungMitOrdnungsnummerType">
+        <xs:attribute name="RefOrdnungsnummer" type="std:UUIDType" use="required">
+          <xs:annotation>
+            <xs:documentation>Amtliche Ordnungsnummer der Steuerbescheinigung, die ergänzt wird.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>

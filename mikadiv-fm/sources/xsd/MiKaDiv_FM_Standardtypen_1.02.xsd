@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:std="http://www.itzbund.de/MiKaDiv/FMStd/1.02"
+  xmlns:xoev="urn:xoev-de:kosit:xoev:datentyp:din-91379_2022-08" targetNamespace="http://www.itzbund.de/MiKaDiv/FMStd/1.02" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="urn:xoev-de:kosit:xoev:datentyp:din-91379_2022-08" schemaLocation="./din-norm-91379-datatypes.xsd"/>
+  <xs:complexType name="NachrichtenType" abstract="true">
+    <xs:annotation>
+      <xs:documentation>Abstrakter Basistyp für MiKaDiv Nachrichten.</xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="NachrichtUUID" type="std:UUIDType" use="required">
+      <xs:annotation>
+        <xs:documentation>Eindeutiger Identifier für die Nachricht.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="OrdBegriff" type="std:Name45Type" use="optional">
+      <xs:annotation>
+        <xs:documentation>Eine interne Nummer oder ein Ordnungsbegriff des Nutzers von MiKaDiv.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:complexType name="MeldungenType" abstract="true">
+    <xs:annotation>
+      <xs:documentation>Abstrakter Basistyp für MiKaDiv Meldungen.</xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="MeldungUUID" type="std:UUIDType" use="required">
+      <xs:annotation>
+        <xs:documentation>Eindeutiger Identifier für die Meldung.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="OrdBegriff" type="std:Name45Type" use="optional">
+      <xs:annotation>
+        <xs:documentation>Eine interne Nummer oder ein Ordnungsbegriff des Nutzers von MiKaDiv.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+  <xs:complexType name="AntwortenType" abstract="true">
+    <xs:annotation>
+      <xs:documentation>Abstrakter Basistyp für MiKaDiv Antworten.</xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="AntwortUUID" type="std:UUIDType" use="required">
+      <xs:annotation>
+        <xs:documentation>Eindeutiger Identifier für die Antwort von MiKaDiv.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="RefNachrichtUUID" type="std:UUIDType" use="required">
+      <xs:annotation>
+        <xs:documentation>Eindeutiger Identifier der Nachricht, auf die geantwortet wird.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="OrdBegriff" type="std:Name45Type" use="optional">
+      <xs:annotation>
+        <xs:documentation>Eine interne Nummer oder ein Ordnungsbegriff des Nutzers von MiKaDiv.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+  <xs:complexType name="ErgebnisType">
+    <xs:annotation>
+      <xs:documentation>Definition eines vierstelligen Rückgabewerts und dem Flag für Fehler/ Hinweis.</xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="ReturnCode" use="required">
+      <xs:annotation>
+        <xs:documentation>Der Returncode zeigt an, ob die Meldung erfolgreich verarbeitet wurde, oder Fehler aufgetreten sind, die dazu führten, dass die Meldung abgelehnt wurde.</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="std:NameType">
+          <xs:maxLength value="4"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="IstFehler" type="xs:boolean" use="required">
+      <xs:annotation>
+        <xs:documentation>Bei TRUE handelt es sich um einen Fehler, bei FALSE um einen Hinweis.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+  <xs:complexType name="GenerellesFeldComplexType">
+    <xs:annotation>
+      <xs:documentation>Transportobjekt für ein Feld mit seinem Inhalt.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Feldbezeichnung" type="std:Name45Type">
+        <xs:annotation>
+          <xs:documentation>Name des Feldes.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Wert" type="std:Name256Type">
+        <xs:annotation>
+          <xs:documentation>Inhalt des Feldes.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PersonErgebnisType">
+    <xs:annotation>
+      <xs:documentation>Typ für einen Rückgabewert einer Person.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="PersonenIdentifizierung" type="std:GenerellesFeldComplexType" minOccurs="0" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Hier wird die gelieferte Person anhand des Feldnamens und seines Wertes identifiziert.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Ergebnis" type="std:ErgebnisType" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Rückgabewert zur Prüfung dieser Person.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="IdMerkmalNNPType">
+    <xs:annotation>
+      <xs:documentation>Die Identifikationsmerkmale einer nicht-natürlichen Person. Eines dieser Attribute muss gesetzt sein.</xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="WIdNr" type="std:WIDType" use="optional">
+      <xs:annotation>
+        <xs:documentation>Die WIdNr der Person.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="Steuernummer" type="std:SteuernummerType" use="optional">
+      <xs:annotation>
+        <xs:documentation>Die Steuernummer der Person.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="LEI" type="std:LEIType" use="optional">
+      <xs:annotation>
+        <xs:documentation>Die LEI der Person.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="EUID" type="std:EUIDType" use="optional">
+      <xs:annotation>
+        <xs:documentation>Die EUID der Person.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="AuslandSteuerNr" type="std:AuslandSteuerNr" use="optional">
+      <xs:annotation>
+        <xs:documentation>Die ausländische Steuernummer der Person.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+  <xs:complexType name="AdresseType" abstract="true">
+    <xs:annotation>
+      <xs:documentation>Abstrakter Typ zur Beschreibung einer Anschrift.</xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="Strasse" type="std:Name80Type" use="optional">
+      <xs:annotation>
+        <xs:documentation>Der Straßenname der Anschrift.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="HausNr" use="optional">
+      <xs:annotation>
+        <xs:documentation>Die Hausnummer der Anschrift.</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:integer">
+          <xs:minInclusive value="0"/>
+          <xs:maxInclusive value="99999"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="HausNrZu" type="std:Name20Type" use="optional">
+      <xs:annotation>
+        <xs:documentation>Mögliche Zusätze zur Hausnummer der Anschrift.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="Ort" use="required">
+      <xs:annotation>
+        <xs:documentation>Der Ortsname der Anschrift.</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="std:Name80Type">
+          <xs:minLength value="1"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType>
+  <xs:complexType name="AdresseInlandType">
+    <xs:annotation>
+      <xs:documentation>Konkreter Typ zur Beschreibung einer Inlandsanschrift.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="std:AdresseType">
+        <xs:attribute name="PLZ" use="required">
+          <xs:annotation>
+            <xs:documentation>Die Postleitzahl der Inlandsanschrift.</xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="std:NameType">
+              <xs:length value="5"/>
+              <xs:pattern value="((0[1-9][0-9]{3})|([1-9][0-9]{4}))"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="AdresseAuslandType">
+    <xs:annotation>
+      <xs:documentation>Konkreter Typ zur Beschreibung einer Auslandsanschrift.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="std:AdresseType">
+        <xs:attribute name="Adressergaenzung">
+          <xs:annotation>
+            <xs:documentation>Eine mögliche Anschriftenergänzung bei Auslandsanschriften.</xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="std:NameType">
+              <xs:maxLength value="50"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="PLZ" use="optional">
+          <xs:annotation>
+            <xs:documentation>Die PLZ der Auslandsanschrift.</xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="std:NameType">
+              <xs:maxLength value="12"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Staat" use="required">
+          <xs:annotation>
+            <xs:documentation>Der Staat der Auslandsanschrift gemäß dem ISO-Code 3166 Alpha-2.</xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="std:NameType">
+              <xs:length value="2"/>
+              <xs:pattern value="[a-zA-Z]{2}"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="IdNrType">
+    <xs:annotation>
+      <xs:documentation>Die Identifikationsnummer der Person.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:NameType">
+      <xs:length value="11"/>
+      <xs:pattern value="[0-9]{11}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Datum0Type">
+    <xs:annotation>
+      <xs:documentation>Datumstyp in der Form jjjj-mm-00 oder jjjj-00-00, Jahresangabe vor 1880 und nach 2099 ist unzulässig.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:length value="10"/>
+      <xs:pattern value="(((18)(8|9)\d)|(19|20)\d{2})-((12|11|10|0[0-9])-00)"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Datum1880Type">
+    <xs:annotation>
+      <xs:documentation>Datumstyp in der Form jjjj-mm-tt,Datum muss logisch sein, frühestes gültiges Datum ist der 01.01.1880.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:date">
+      <xs:minInclusive value="1880-01-01"/>
+      <xs:maxInclusive value="2099-12-31"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Datum0000Type">
+    <xs:annotation>
+      <xs:documentation>Unbekanntes Datum in der Form 0000-00-00.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:length value="10"/>
+      <xs:pattern value="[0]{4}-[0]{2}-[0]{2}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="GeburtsdatumType">
+    <xs:annotation>
+      <xs:documentation>Das Geburtsdatum der Person im Format jjjj-mm-tt, das (teil-)unbekannte Daten erlaubt.</xs:documentation>
+    </xs:annotation>
+    <xs:union memberTypes="std:Datum0Type std:Datum1880Type std:Datum0000Type"/>
+  </xs:simpleType>
+  <xs:simpleType name="WIDType">
+    <xs:annotation>
+      <xs:documentation>Die Wirtschafts-Identifikationsnummer einer nicht-natürlichen Person ohne Bindestrich vor dem 5-stelligen Unterscheidungsmerkmal.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:NameType">
+      <xs:length value="16"/>
+      <xs:pattern value="DE[0-9]{14}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ZulassungsnummerType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine Zulassungsnummer von MiKaDiv.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:NameType">
+      <xs:length value="8"/>
+      <xs:pattern value="[13][0-9]{6}[1-9]"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="SteuernummerType">
+    <xs:annotation>
+      <xs:documentation>Die Steuernummer einer nicht-natürlichen Person im bundeseinheitlichen Format.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:NameType">
+      <xs:length value="13"/>
+      <xs:pattern value="(10|11|21|22|23|24|26|27|28|30|31|32|40|41|50|51|52|53|90|91|92)\d{2}0\d{8}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="BZStSteuernummerType">
+    <xs:annotation>
+      <xs:documentation>Die BZSt-Steuernummer einer nicht-natürlichen Person.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:NameType">
+      <xs:length value="13"/>
+      <xs:pattern value="(60)\d{11}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="TelefonnummerType">
+    <xs:annotation>
+      <xs:documentation>Die Telefonnummer einer Person.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:NameType">
+      <xs:maxLength value="30"/>
+      <xs:minLength value="1"/>
+      <xs:pattern value="([0-9]|[+]|[\-]|[/]|[(]|[)]|[ ])*"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MailType">
+    <xs:annotation>
+      <xs:documentation>Die E-Mail-Adresse einer Person.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:NameType">
+      <xs:maxLength value="320"/>
+      <xs:pattern value=".+@.+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="UUIDType">
+    <xs:annotation>
+      <xs:documentation>Eine UUID nach RFC 4122 basiert auf einem 32-digit Hex String mit [8]-[4]-[4]-[4]-[12] Zeichen.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:NameType">
+      <xs:pattern value="[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[1-5][A-Fa-f0-9]{3}-[ABab89][A-Fa-f0-9]{3}-[A-Fa-f0-9]{12}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ISINType">
+    <xs:annotation>
+      <xs:documentation>Die Internationale Wertpapierkennnummer gemäß ISO 6166 besteht aus einem zwei Buchstaben umfassenden Ländercode, gefolgt von der neunstelligen alphanumerische NSIN (National Securities Identifying Number) und einer Prüfziffer.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:NameType">
+      <xs:length value="12"/>
+      <xs:pattern value="[A-Z]{2}[0-9A-Z]{9}[0-9]{1}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="LEIType">
+    <xs:annotation>
+      <xs:documentation>Typ für den Legal Entity Identifier (LEI) im Format einer CICI bis einschließlich 30.11.2012 oder ab dem 01.12.2020 nach ISO 17442.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:Name20Type">
+      <xs:pattern value="([0-9A-Z]{18}[0-9]{2})|([0-9]{4}00[0-9A-Z]{12}[0-9]{2})"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="NationaleKennungType">
+    <xs:annotation>
+      <xs:documentation>Nationale Kennung einer natürlichen Person im Sinne von Artikel 6 der Delegierten Verordnung (EU) 2017/590 der Kommission.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:NameType">
+      <xs:maxLength value="35"/>
+      <xs:pattern value="[A-Z0-9]{1,35}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="AuslandSteuerNr">
+    <xs:annotation>
+      <xs:documentation>Vom Ansässigkeitsstaat vergebenes Steueridentifikationsmerkmal.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:NameType">
+      <xs:maxLength value="35"/>
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="EUIDType">
+    <xs:annotation>
+      <xs:documentation>Die EUID der Person.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:NameType">
+      <xs:maxLength value="200"/>
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="RechtsgrundlageType">
+    <xs:annotation>
+      <xs:documentation>Typ zur Angabe einer Rechtsgrundlage als Freitext. Angabe als § + Absatz + S. + Nr. + S. + Buchst. Rechtsnorm oder BMF-Schreiben vom xx.xx.xxxx + Rz.; 
+
+Beispiele: 
+• § 50c Absatz 2 Satz 1 Nr. 1 EStG     
+oder
+• § 7 Absatz 1 InvStG
+ 
+Bei Anwendung des Regelsteuersatzes ist folgende Rechtsgrundlage immer anzugeben: § 43a Absatz 1 Nr. 1 EStG.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:NameType">
+      <xs:maxLength value="100"/>
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="RechtsformType">
+    <xs:annotation>
+      <xs:documentation>Typ zur Angabe der Rechtsform als Freitext.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:NameType">
+      <xs:maxLength value="60"/>
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="KontonummerType">
+    <xs:annotation>
+      <xs:documentation>Typ zur Angabe einer Depot- oder Kontonummer.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:NameType">
+      <xs:maxLength value="200"/>
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="KontoMitStueckzahlType">
+    <xs:annotation>
+      <xs:documentation>Typ zur Angabe eines Kontos oder Depots mit der Anzahl der Wertpapiere dieses Kontos/Depots.</xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="Kontonummer" type="std:KontonummerType" use="required">
+      <xs:annotation>
+        <xs:documentation>Konto- oder Depotnummer der Wertpapiere.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="Stueckzahl" type="std:WertpapierStueckzahlType" use="required">
+      <xs:annotation>
+        <xs:documentation>Stückzahl, der in diesem Konto/Depot enthaltenen Wertpapiere.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+  <xs:simpleType name="DepotverhaeltnisEnumType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="P">
+        <xs:annotation>
+          <xs:documentation>Pfanddepot</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="N">
+        <xs:annotation>
+          <xs:documentation>Nießbrauchdepot</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="T">
+        <xs:annotation>
+          <xs:documentation>Treuhanddepot</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="DepotkontoEnumType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="A">
+        <xs:annotation>
+          <xs:documentation>Eigenkonto</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="B">
+        <xs:annotation>
+          <xs:documentation>Allgemeines Konto Dritter</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="C">
+        <xs:annotation>
+          <xs:documentation>Einzelkonto eines Dritten</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="D">
+        <xs:annotation>
+          <xs:documentation>Detail-Registerkonto eines allgemeinen Kontos Dritter.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="E">
+        <xs:annotation>
+          <xs:documentation>Gesamtkonto Dritter, außer B.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="F">
+        <xs:annotation>
+          <xs:documentation>Einzelkonto eines Wertpapierinhabers, außer D oder C.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="G">
+        <xs:annotation>
+          <xs:documentation>Sonstige Kontoart</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Dezimal14dot2Type">
+    <xs:annotation>
+      <xs:documentation>Dezimalbetrag für Beträge mit 14 Stellen vor und zwei Stellen nach dem Komma, der auch Negativwerte erlaubt.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:decimal">
+      <xs:fractionDigits value="2"/>
+      <xs:totalDigits value="16"/>
+      <xs:maxInclusive value="99999999999999.99"/>
+      <xs:minInclusive value="-99999999999999.99"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="WertpapierStueckzahlType">
+    <xs:annotation>
+      <xs:documentation>Typ zur Angabe der Stückzahl von Wertpapieren.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:decimal">
+      <xs:fractionDigits value="4"/>
+      <xs:totalDigits value="19"/>
+      <xs:maxInclusive value="999999999999999.9999"/>
+      <xs:minInclusive value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="SteuersatzType">
+    <xs:annotation>
+      <xs:documentation>Typ für einen prozentualen Steuersatz im Wert von 0-49,99.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:decimal">
+      <xs:fractionDigits value="2"/>
+      <xs:totalDigits value="4"/>
+      <xs:maxInclusive value="49.99"/>
+      <xs:minInclusive value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="VerhaeltnisType">
+    <xs:restriction base="xs:decimal">
+      <xs:fractionDigits value="2"/>
+      <xs:totalDigits value="13"/>
+      <xs:maxInclusive value="99999999999.99"/>
+      <xs:minExclusive value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Name105Type">
+    <xs:annotation>
+      <xs:documentation>Basis-Typ für Zeichenketten mit der Länge 105.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:NameType">
+      <xs:maxLength value="105"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Name256Type">
+    <xs:annotation>
+      <xs:documentation>Basis-Typ für Zeichenketten mit der Länge 256.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:NameType">
+      <xs:maxLength value="256"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Name80Type">
+    <xs:annotation>
+      <xs:documentation>Basis-Typ für Zeichenketten mit der Länge 80.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:NameType">
+      <xs:maxLength value="80"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Name45Type">
+    <xs:annotation>
+      <xs:documentation>Basis-Typ für Zeichenketten mit der Länge 45.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:NameType">
+      <xs:maxLength value="45"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Name20Type">
+    <xs:annotation>
+      <xs:documentation>Basis-Typ für Zeichenketten mit der Länge 20.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:NameType">
+      <xs:maxLength value="20"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="NameType">
+    <xs:annotation>
+      <xs:documentation>Basis-Typ für Zeichenketten des Grundtyps (Datentyp C der DIN-Norm 91379), die zusätzlich keinen Zeilenvorschub, keinen Zeilenumbruch und keinen Tabulator enthalten.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:StringNoLeadingOrTrailingSeparators">
+      <xs:whiteSpace value="collapse"/>
+      <xs:pattern value="([^\n\r\t])*"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="StringNoLeadingOrTrailingSeparators">
+    <xs:annotation>
+      <xs:documentation>Basis-Typ für Zeichenketten des Grundtyps (Datentyp C der DIN-Norm 91379), die nicht mit einem Separator beginnen und enden dürfen.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="std:StringNoLeadingSeparators">
+      <xs:pattern value=".*[^&#x0020;]"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="StringNoLeadingSeparators">
+    <xs:annotation>
+      <xs:documentation>Basis-Typ für Zeichenketten des Grundtyps (Datentyp C der DIN-Norm 91379), die nicht mit einem Separator beginnen dürfen.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xoev:datatypeC">
+      <xs:pattern value="[^&#x0020;].*"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

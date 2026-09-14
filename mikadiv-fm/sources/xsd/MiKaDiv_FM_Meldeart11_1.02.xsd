@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- bearbeitet mit XMLSpy v2025 (x64) (https://www.altova.com) von Informationstechnikzentrum Bund (ITZBund) (Informationstechnikzentrum Bund (ITZBund)) -->
+<!-- Mit XMLSpy v2022 (x64) (http://www.altova.com) von Company="Informationstechnikzentrum Bund (ITZBund) (Informationstechnikzentrum Bund (ITZBund)) bearbeitet -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:fmmabase="http://www.itzbund.de/MiKaDiv/FMMaBase/1.02" targetNamespace="http://www.itzbund.de/MiKaDiv/FMMa11/1.02" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMMaBase/1.02" schemaLocation="./MiKaDiv_FM_MeldeartenBasis_1.02.xsd"/>
+  <xs:complexType name="Meldeart11">
+    <xs:annotation>
+      <xs:documentation>Meldung nach § 45b Absatz 2 EStG.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmmabase:SelbststaendigeMeldungMitOrdnungsnummerType">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>

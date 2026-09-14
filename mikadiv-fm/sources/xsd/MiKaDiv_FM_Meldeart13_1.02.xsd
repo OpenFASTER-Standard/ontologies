@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mit XMLSpy v2022 (x64) (http://www.altova.com) von Company="Informationstechnikzentrum Bund (ITZBund) (Informationstechnikzentrum Bund (ITZBund)) bearbeitet -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:fmma13="http://www.itzbund.de/MiKaDiv/FMMa13/1.02"
+  xmlns:fmmabase="http://www.itzbund.de/MiKaDiv/FMMaBase/1.02"
+  xmlns:fmpers="http://www.itzbund.de/MiKaDiv/FMPers/1.02"
+  xmlns:std="http://www.itzbund.de/MiKaDiv/FMStd/1.02"
+  xmlns:fmfach="http://www.itzbund.de/MiKaDiv/FMFach/1.02" targetNamespace="http://www.itzbund.de/MiKaDiv/FMMa13/1.02" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMStd/1.02" schemaLocation="./MiKaDiv_FM_Standardtypen_1.02.xsd"/>
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMPers/1.02" schemaLocation="./MiKaDiv_FM_Personentypen_1.02.xsd"/>
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMFach/1.02" schemaLocation="./MiKaDiv_FM_Fachtypen_1.02.xsd"/>
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMMaBase/1.02" schemaLocation="./MiKaDiv_FM_MeldeartenBasis_1.02.xsd"/>
+  <xs:complexType name="Meldeart13">
+    <xs:annotation>
+      <xs:documentation>Meldung nach § 45b Absatz 6 EStG.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmmabase:SelbststaendigeMeldungType">
+        <xs:sequence>
+          <xs:element name="Verwahrkette" type="fmfach:VerwahrketteType" minOccurs="0" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Die Verwahrkette der Meldung.</xs:documentation>
+            </xs:annotation>
+            <xs:unique name="KnotenpositionInVerwahrketteEindeutig">
+              <xs:annotation>
+                <xs:documentation>Constraint der sicherstellt, dass innerhalb der Verwahrkette die Positionen eindeutig sind.</xs:documentation>
+              </xs:annotation>
+              <xs:selector xpath="fmfach:Verwahrstelle | fmfach:DepotfuehrendeStelle"/>
+              <xs:field xpath="@Position"/>
+            </xs:unique>
+          </xs:element>
+          <xs:element name="Kontopersonen" type="fmpers:KontopersonUndVertreterType" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Die Kontopersonen der Meldung.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="KontoListe" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Typ für eine Liste von bis zu 20 Konten.</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Konto" maxOccurs="20">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="Paymentlines" type="fmma13:PaymentlineListeMa13Type"/>
+                    </xs:sequence>
+                    <xs:attribute name="Kontonummer" type="std:KontonummerType" use="required">
+                      <xs:annotation>
+                        <xs:documentation>Kontonummer</xs:documentation>
+                      </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="ArtDesDepotkontos" type="std:DepotkontoEnumType" use="required">
+                      <xs:annotation>
+                        <xs:documentation>Die Art des Depotkontos.</xs:documentation>
+                      </xs:annotation>
+                    </xs:attribute>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+            <xs:unique name="EindeutigesKonto">
+              <xs:annotation>
+                <xs:documentation>Constraint der sicherstellt, dass Art des Depokontos und Kontonummer zusammen eindeutig sind.</xs:documentation>
+              </xs:annotation>
+              <xs:selector xpath="fmma13:Konto" />
+              <xs:field xpath="@ArtDesDepotkontos" />
+              <xs:field xpath="@Kontonummer" />
+            </xs:unique>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="PaymentlineListeMa13Type">
+    <xs:annotation>
+      <xs:documentation>Typ für eine Liste von Paymentlines.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Paymentline" type="fmma13:PaymentlineMa13Type" minOccurs="1" maxOccurs="1000"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="PaymentlineMa13Type">
+    <xs:annotation>
+      <xs:documentation>Erweiterung des Basistyps um den meldeartspezifischen Zahlungstag.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmfach:Paymentline45BBasisType">
+        <xs:sequence>
+          <xs:element name="ZusatzMeldungUUID" type="std:UUIDType" minOccurs="0" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>UUID der Zusatzangabenmeldung mit Angaben zu Zu- und Abgängen, die Teil dieser Meldung ist.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Kapitalertrag" type="fmfach:KapitalertragType" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>§ 45b Absatz 2 Nr. 4 EStG (Heading D).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Stueckzahlen" type="fmfach:StueckzahlenType" minOccurs="0" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Angaben zu § 45b Absatz 2 Nr. 5 a) und b) EStG - Optional bei Meldeart 13.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Hinterlegungsschein" type="fmfach:HinterlegungsscheinType" minOccurs="0" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>§ 45b Absatz 2 Nr. 6 EStG (Heading G); Optional bei Meldeart 13; Darf nur angegeben werden, wenn Nichtbeanstandung-45b-Abs.2-Nr.6 false ist.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Nichtbeanstandung-45b-Abs.2-Nr.6" type="xs:boolean" default="false">
+          <xs:annotation>
+            <xs:documentation>Kennzeichnung, dass die Nichtbeanstandungsregelung zum 2. Steuerabzug aus der Rz 70 des BMF-Schreibens zu Einzelfragen zur Datenübermittlung nach Maßgabe des § 45b und des § 45c EStG angewendet wurde.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>

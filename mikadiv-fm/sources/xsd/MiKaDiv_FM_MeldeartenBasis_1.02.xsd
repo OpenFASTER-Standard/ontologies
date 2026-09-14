@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mit XMLSpy v2021 (x64) (http://www.altova.com) von Company="Informationstechnikzentrum Bund (ITZBund) (Informationstechnikzentrum Bund (ITZBund)) bearbeitet -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:fmmabase="http://www.itzbund.de/MiKaDiv/FMMaBase/1.02"
+  xmlns:fmpers="http://www.itzbund.de/MiKaDiv/FMPers/1.02"
+  xmlns:std="http://www.itzbund.de/MiKaDiv/FMStd/1.02"
+  xmlns:fmfach="http://www.itzbund.de/MiKaDiv/FMFach/1.02" targetNamespace="http://www.itzbund.de/MiKaDiv/FMMaBase/1.02" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMStd/1.02" schemaLocation="./MiKaDiv_FM_Standardtypen_1.02.xsd"/>
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMPers/1.02" schemaLocation="./MiKaDiv_FM_Personentypen_1.02.xsd"/>
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMFach/1.02" schemaLocation="./MiKaDiv_FM_Fachtypen_1.02.xsd"/>
+  <!-- Meldungstypen -->
+
+  <xs:simpleType name="Meldungstyp">
+    <xs:annotation>
+      <xs:documentation>Typ einer Meldung.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="E">
+        <xs:annotation>
+          <xs:documentation>Erstmeldung</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="K">
+        <xs:annotation>
+          <xs:documentation>Korrekturmeldung: Referenz zur Erstmeldung ist anzugeben, optional ein Berichtigungsgrund.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="MeldungType" abstract="true">
+    <xs:annotation>
+      <xs:documentation>Abstrakter Typ einer einzelnen Meldung.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="std:MeldungenType"/>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SelbststaendigeMeldungType" abstract="true">
+    <xs:annotation>
+      <xs:documentation>Abstrakter Typ einer einzelnen Meldung.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmmabase:MeldungType">
+        <xs:attribute name="Typ" type="fmmabase:Meldungstyp" use="required">
+          <xs:annotation>
+            <xs:documentation>Gibt an, ob es sich um eine Erstmeldung oder um eine Korrektur handelt.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ErstmeldungUUID" type="std:UUIDType" use="optional">
+          <xs:annotation>
+            <xs:documentation>Technische UUID der Erstmeldung, die korrigiert bzw. storniert werden soll. Wenn eine ergänzende Steuerbescheinigung korrigiert/storniert wird, ist hier die UUID der zu korrigierenden/stornierenden ergänzenden Steuerbescheinigung einzutragen.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Berichtigungsgrund" use="optional">
+          <xs:annotation>
+            <xs:documentation>Optionaler Berichtigungsgrund im Falle einer Korrektur.</xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base="std:NameType">
+              <xs:maxLength value="300"/>
+              <xs:minLength value="1"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Meldejahr" type="xs:gYear" use="required">
+          <xs:annotation>
+            <xs:documentation>Das Meldejahr ist das Jahr des Zuflusses der Kapitalerträge. Angegeben wird das Meldejahr im Format JJJJ.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Zeitstempel" type="xs:dateTime" use="required">
+          <xs:annotation>
+            <xs:documentation>Gibt den fachlichen Zeitpunkt an, auf den sich die Meldung bezieht / zu dem die Inhalte der Meldung fachlich wirksam geworden sind. Muss somit vor dem technischen Einlieferungszeitpunkt liegen. Meldungen werden an Hand des fachlichen Zeitstempels chronologisch sortiert.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SelbststaendigeMeldungMitOrdnungsnummerType" abstract="true" block="#all">
+    <xs:annotation>
+      <xs:documentation>Meldung mit amtlicher Ordnungsnummer.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmmabase:SelbststaendigeMeldungType">
+        <xs:sequence>
+          <xs:element name="Verwahrkette" type="fmfach:VerwahrketteType" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Die Verwahrkette der Meldung.</xs:documentation>
+            </xs:annotation>
+            <xs:unique name="KnotenpositionInVerwahrketteEindeutig">
+              <xs:annotation>
+                <xs:documentation>Constraint der sicherstellt, dass innerhalb der Verwahrkette die Positionen eindeutig sind.</xs:documentation>
+              </xs:annotation>
+              <xs:selector xpath="fmfach:Verwahrstelle | fmfach:DepotfuehrendeStelle"/>
+              <xs:field xpath="@Position"/>
+            </xs:unique>
+          </xs:element>
+          <xs:element name="Kontopersonen" type="fmpers:KontopersonUndVertreterType" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Die Kontopersonen der Meldung.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="KontoListe" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Typ für eine Liste von bis zu 20 Konten.</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="BescheinigteSteuern" type="fmfach:SteuerangabenType" minOccurs="0" maxOccurs="1">
+                  <xs:annotation>
+                    <xs:documentation>Liste aller bescheinigten Steuern.</xs:documentation>
+                  </xs:annotation>
+                </xs:element>
+                <xs:element name="Konto" maxOccurs="20">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="Paymentlines" type="fmfach:PaymentlineListeMa11ErgType"/>
+                    </xs:sequence>
+                    <xs:attribute name="Kontonummer" type="std:KontonummerType" use="required">
+                      <xs:annotation>
+                        <xs:documentation>Kontonummer</xs:documentation>
+                      </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="ArtDesDepotkontos" type="std:DepotkontoEnumType" use="required">
+                      <xs:annotation>
+                        <xs:documentation>Die Art des Depotkontos.</xs:documentation>
+                      </xs:annotation>
+                    </xs:attribute>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+            <xs:unique name="EindeutigesKonto">
+              <xs:selector xpath="fmmabase:Konto" />
+              <xs:field xpath="@ArtDesDepotkontos" />
+              <xs:field xpath="@Kontonummer" />
+            </xs:unique>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="AmtlicheOrdnungsnummer" type="std:UUIDType" use="required">
+          <xs:annotation>
+            <xs:documentation>Amtliche Ordnungsnummer gemäß § 45b Absatz 1 EStG.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Sammelsteuerbescheinigung" type="xs:boolean" default="false">
+          <xs:annotation>
+            <xs:documentation>Kennzeichen, dass die Einzelsteuerbescheinigung auf Grundlage einer Sammel-Steuerbescheinigung ausgestellt wurde. Gilt auch für ergänzende Steuerbescheinigungen, sofern die Erstbescheinigung bereits eine Kennzeichnung enthält.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="DatumSteuerbescheinigung" type="std:Datum1880Type" use="optional">
+          <xs:annotation>
+            <xs:documentation>Pflichtfeld bei Steuerinländern.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>

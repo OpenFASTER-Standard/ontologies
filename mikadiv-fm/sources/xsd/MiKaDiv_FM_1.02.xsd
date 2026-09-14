@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mit XMLSpy v2021 (x64) (http://www.altova.com) von Company="Informationstechnikzentrum Bund (ITZBund) (Informationstechnikzentrum Bund (ITZBund)) bearbeitet -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:fm="http://www.itzbund.de/MiKaDiv/FM/1.02"
+  xmlns:std="http://www.itzbund.de/MiKaDiv/FMStd/1.02"
+  xmlns:fmpers="http://www.itzbund.de/MiKaDiv/FMPers/1.02"
+  xmlns:fmma21="http://www.itzbund.de/MiKaDiv/FMMa21/1.02"
+  xmlns:fmma22="http://www.itzbund.de/MiKaDiv/FMMa22/1.02"
+  xmlns:fmma23="http://www.itzbund.de/MiKaDiv/FMMa23/1.02"
+  xmlns:fmma11="http://www.itzbund.de/MiKaDiv/FMMa11/1.02"
+  xmlns:fmma13="http://www.itzbund.de/MiKaDiv/FMMa13/1.02"
+  xmlns:fmmaerg="http://www.itzbund.de/MiKaDiv/FMMaErg/1.02"
+  xmlns:fmmason="http://www.itzbund.de/MiKaDiv/FMMaSon/1.02" targetNamespace="http://www.itzbund.de/MiKaDiv/FM/1.02" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMStd/1.02" schemaLocation="./MiKaDiv_FM_Standardtypen_1.02.xsd"/>
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMPers/1.02" schemaLocation="./MiKaDiv_FM_Personentypen_1.02.xsd"/>
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMMa11/1.02" schemaLocation="./MiKaDiv_FM_Meldeart11_1.02.xsd"/>
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMMa13/1.02" schemaLocation="./MiKaDiv_FM_Meldeart13_1.02.xsd"/>
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMMa21/1.02" schemaLocation="./MiKaDiv_FM_Meldeart21_1.02.xsd"/>
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMMa22/1.02" schemaLocation="./MiKaDiv_FM_Meldeart22_1.02.xsd"/>
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMMa23/1.02" schemaLocation="./MiKaDiv_FM_Meldeart23_1.02.xsd"/>
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMMaSon/1.02" schemaLocation="./MiKaDiv_FM_MeldeartenSonder_1.02.xsd"/>
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMMaErg/1.02" schemaLocation="./MiKaDiv_FM_MeldeartErg_1.02.xsd"/>
+
+
+
+
+  <!-- Elemente -->
+  <xs:element name="MiKaDivFMRoot">
+    <xs:annotation>
+      <xs:documentation>Root-Element für die Nutzdaten.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:choice>
+        <xs:element name="MiKaDiv_FM_45b" type="fm:MeldungListe45bType"/>
+        <xs:element name="MiKaDiv_FM_45c" type="fm:MeldungListe45cType"/>
+        <xs:element name="MiKaDiv_FM_ANTW" type="fm:AntwortListeType"/>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="UUIDIstEindeutig">
+      <xs:annotation>
+        <xs:documentation>Die Prüfung stellt sicher, dass innerhalb der Meldungen keine UUID doppelt verwendet wird.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//*"/>
+      <xs:field xpath="@MeldungUUID"/>
+    </xs:unique>
+
+    <xs:unique name="ZulassungsnummerIstEindeutig">
+      <xs:annotation>
+        <xs:documentation>Constraint der sicherstellt, dass die Zulassungsnummer innerhalb der Nachricht eindeutig ist.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//*"/>
+      <xs:field xpath="@Zulassungsnummer"/>
+    </xs:unique>
+  </xs:element>
+
+  <xs:complexType name="DLZertifiziert">
+    <xs:annotation>
+      <xs:documentation>Datenlieferant mit Einlieferung unter Verwendung der zertifizierten Stelle, für Meldearten 11, 13, ERG, ZAM.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="std:NachrichtenType">
+        <xs:sequence>
+          <xs:element name="ZertifizierteStelle" type="fmpers:ZertifizierteStelleType" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Das zertifizierte Institut.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Dienstleister" type="fmpers:DienstleisterType" minOccurs="0" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Dienstleister, der im Auftrag eines zertifizierten Instituts die Meldung vornimmt.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="DLMeldepflichtig">
+    <xs:annotation>
+      <xs:documentation>Datenlieferant mit Einlieferung unter Verwendung der meldepflichtigen Stelle, für Meldearten 21, 22, 23.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="std:NachrichtenType">
+        <xs:sequence>
+          <xs:element name="MeldepflichtigeStelle" type="fmpers:MeldepflichtigeStelleType" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Das meldepflichtige Institut.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Dienstleister" type="fmpers:DienstleisterType" minOccurs="0" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Dienstleister, der im Auftrag eines meldepflichtigen Instituts die Meldung vornimmt.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- Meldung -->
+  <xs:complexType name="MeldungListe45bType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine Liste von MiKaDiv-Meldungen, die nur Meldungen der gleichen Meldeart enthalten dürfen.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fm:DLZertifiziert">
+        <xs:choice>
+          <xs:element name="MA11Liste" type="fm:MA11ListeType"/>
+          <xs:element name="MA13Liste" type="fm:MA13ListeType"/>
+          <xs:element name="SMListe" type="fm:SMListeType"/>
+          <xs:element name="ZAMListe" type="fm:ZAMListeType"/>
+          <xs:element name="MAErgListe" type="fm:MAErgListeType"/>
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="MeldungListe45cType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine Liste von MiKaDiv-Meldungen gemäß § 45c EStG.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fm:DLMeldepflichtig">
+        <xs:choice>
+          <xs:element name="MA21Liste" type="fm:MA21ListeType"/>
+          <xs:element name="MA22Liste" type="fm:MA22ListeType"/>
+          <xs:element name="MA23Liste" type="fm:MA23ListeType"/>
+          <xs:element name="SMListe" type="fm:SMListeType"/>
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="MA11ListeType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine Liste von Meldungen der Meldeart 11.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Meldung" type="fmma11:Meldeart11" maxOccurs="unbounded">
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="MA13ListeType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine Liste von Meldungen der Meldeart 13.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Meldung" type="fmma13:Meldeart13" maxOccurs="unbounded">
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+
+  <xs:complexType name="MA21ListeType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine Liste von Meldungen der Meldeart 21.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Meldung" type="fmma21:Meldeart21" maxOccurs="unbounded">
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="MA22ListeType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine Liste von Meldungen der Meldeart 22.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Meldung" type="fmma22:Meldeart22" maxOccurs="unbounded">
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="MA23ListeType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine Liste von Meldungen der Meldeart 23.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Meldung" type="fmma23:Meldeart23" maxOccurs="unbounded">
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SMListeType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine Liste von Stornomeldungen.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Meldung" type="fmmason:StornomeldungType" maxOccurs="unbounded">
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ZAMListeType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine Liste von Zusatzangabenmeldungen.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Meldung" type="fmmason:ZusatzAngabenMeldung" maxOccurs="unbounded">
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="MAErgListeType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine Liste von Meldungen der Meldeart ERG (Ergänzende Steuerbescheinigung).</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Meldung" type="fmmaerg:MeldeartErg" maxOccurs="unbounded">
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Antwort -->
+  <xs:complexType name="AntwortListeType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine Liste von MiKaDiv-Antworten.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="std:AntwortenType">
+        <xs:choice>
+          <xs:element name="AntwortListe">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Antwort" type="fm:AntwortType" maxOccurs="unbounded">
+                  <xs:annotation>
+                    <xs:documentation>Antworten auf die einzelnen Meldedatensätze.</xs:documentation>
+                  </xs:annotation>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="NachrichtenAntwort" type="std:ErgebnisType">
+            <xs:annotation>
+              <xs:documentation>Rückgabewert für einen Fehler oder Hinweis in der Nachricht.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="AntwortType" abstract="false">
+    <xs:annotation>
+      <xs:documentation>Typ für eine einzelne Antwort.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="std:MeldungenType">
+        <xs:sequence>
+          <xs:element name="PersonenErgebnis" minOccurs="0" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Rückgabewert zu Personen dieser Meldung.</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="PersonErgebnis" type="std:PersonErgebnisType" minOccurs="1" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="MeldungsErgebnis" type="std:ErgebnisType">
+            <xs:annotation>
+              <xs:documentation>Allgemeiner Rückgabewert zur Meldung.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>

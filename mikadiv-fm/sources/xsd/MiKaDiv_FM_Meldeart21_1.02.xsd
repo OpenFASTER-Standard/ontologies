@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mit XMLSpy v2021 (x64) (http://www.altova.com) von Company="Informationstechnikzentrum Bund (ITZBund) (Informationstechnikzentrum Bund (ITZBund)) bearbeitet -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:fmma21="http://www.itzbund.de/MiKaDiv/FMMa21/1.02"
+  xmlns:fmmabase="http://www.itzbund.de/MiKaDiv/FMMaBase/1.02"
+  xmlns:fmfach="http://www.itzbund.de/MiKaDiv/FMFach/1.02" targetNamespace="http://www.itzbund.de/MiKaDiv/FMMa21/1.02" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMFach/1.02" schemaLocation="./MiKaDiv_FM_Fachtypen_1.02.xsd"/>
+  <xs:import namespace="http://www.itzbund.de/MiKaDiv/FMMaBase/1.02" schemaLocation="./MiKaDiv_FM_MeldeartenBasis_1.02.xsd"/>
+  <xs:complexType name="Meldeart21">
+    <xs:annotation>
+      <xs:documentation>Zusammengefasste Meldung nach § 45c Absatz 1 EStG.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmmabase:SelbststaendigeMeldungType">
+        <xs:sequence>
+          <xs:element name="Wertpapiergattung" type="fmma21:WertpapiergattungMa21Type" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Angabe der Wertpapiergattung dieser Meldung.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="WertpapiergattungMa21Type">
+    <xs:annotation>
+      <xs:documentation>Typ zur Erweiterung der Wertpapiergattung um meldeartspezifische Angaben.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="fmfach:WertpapiergattungType">
+        <xs:sequence>
+          <xs:element name="Zahlungstage" type="fmma21:ZahlungstagMa21ListeType" minOccurs="1" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Zahlungstage dieser Wertpapiergattung. Pro Zahlungstag darf es nur einen Eintrag geben.</xs:documentation>
+            </xs:annotation>
+            <xs:unique name="EindeutigerZahlungstag">
+              <xs:annotation>
+                <xs:documentation>Constraint der sicherstellt, dass pro Zahlungstag nur ein Eintrag existiert.</xs:documentation>
+              </xs:annotation>
+              <xs:selector xpath="fmma21:Zahlungstag"/>
+              <xs:field xpath="@Datum"/>
+            </xs:unique>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ZahlungstagMa21ListeType">
+    <xs:annotation>
+      <xs:documentation>Typ für eine Liste von Zahlungstagen dieser Wertpapiergattung.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Zahlungstag" type="fmma21:ZahlungstagMa21Type" minOccurs="1" maxOccurs="4">
+        <xs:annotation>
+          <xs:documentation>Zahlungstag dieser Wertpapiergattung.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ZahlungstagMa21Type">
+    <xs:annotation>
+      <xs:documentation>Typ für einen einzelnen Zahlungstag der Meldeart 21. Die Kombination aus Datum und Wertpapiergattung muss eindeutig sein.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="OhneAbstand" type="fmfach:ErtragsGruppe45cType" minOccurs="0" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Angaben zu Erträgen, bei denen vom Steuerabzug kein Abstand genommen wurde.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="TeilAbstaende" minOccurs="0" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Angaben zu Erträgen, bei denen vom Steuerabzug teilweise Abstand genommen wurde. Für jeden Rechtsgrund der Abstandnahme ist ein Eintrag in der Liste aufzunehmen.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="TeilAbstand" type="fmfach:ErtragsGruppe45cType" maxOccurs="30">
+              <xs:annotation>
+                <xs:documentation>Angaben zu Erträgen, bei denen der Steuerabzug teilweise vorgenommen wurde.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="VollAbstaende" minOccurs="0" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>Angaben zu Erträgen, bei denen vom Steuerabzug vollständig Abstand genommen wurde. Für jeden Rechtsgrund der Abstandnahme ist ein Eintrag in der Liste aufzunehmen.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="VollAbstand" type="fmfach:ErtragsGruppe45cType" maxOccurs="30">
+              <xs:annotation>
+                <xs:documentation>Angaben zu Erträgen, bei denen auf Grund einer Rechtsgrundlage vom Steuerabzug vollständig Abstand genommen wurde.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="Datum" type="xs:date" use="required">
+      <xs:annotation>
+        <xs:documentation>Tag der Auszahlung.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+</xs:schema>
