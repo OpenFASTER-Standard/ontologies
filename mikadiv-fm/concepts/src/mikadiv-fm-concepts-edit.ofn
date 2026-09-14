@@ -1,0 +1,14 @@
+Prefix(:=<https://purl.openfaster.org/mfo/>)
+Prefix(owl:=<http://www.w3.org/2002/07/owl#>)
+Prefix(rdf:=<http://www.w3.org/1999/02/22-rdf-syntax-ns#>)
+Prefix(xml:=<http://www.w3.org/XML/1998/namespace>)
+Prefix(xsd:=<http://www.w3.org/2001/XMLSchema#>)
+Prefix(rdfs:=<http://www.w3.org/2000/01/rdf-schema#>)
+Prefix(dc:=<http://purl.org/dc/elements/1.1/>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+
+Ontology(<https://purl.openfaster.org/mfo/mikadiv-fm-concepts.owl>
+Annotation(dc:title "MiKaDiv-FM Concepts"@en)
+Annotation(dc:description "Semantic concepts for BZSt's real Mitteilungsverfahren MiKaDiv (FM) -- Steuerbescheinigungen, §45b Abs. 1-6 + §45c EStG. No content curated yet -- see repo README."@en)
+Annotation(dcterms:license <https://creativecommons.org/licenses/by/4.0/>)
+)
