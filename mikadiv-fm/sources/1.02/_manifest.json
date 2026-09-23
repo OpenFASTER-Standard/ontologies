@@ -1,0 +1,23 @@
+{
+  "MiKaDiv_FM": "xsd/MiKaDiv_FM_1.02.xsd",
+  "MiKaDiv_FM_Fachtypen": "xsd/MiKaDiv_FM_Fachtypen_1.02.xsd",
+  "MiKaDiv_FM_Meldeart11": "xsd/MiKaDiv_FM_Meldeart11_1.02.xsd",
+  "MiKaDiv_FM_Meldeart13": "xsd/MiKaDiv_FM_Meldeart13_1.02.xsd",
+  "MiKaDiv_FM_Meldeart21": "xsd/MiKaDiv_FM_Meldeart21_1.02.xsd",
+  "MiKaDiv_FM_Meldeart22": "xsd/MiKaDiv_FM_Meldeart22_1.02.xsd",
+  "MiKaDiv_FM_Meldeart23": "xsd/MiKaDiv_FM_Meldeart23_1.02.xsd",
+  "MiKaDiv_FM_MeldeartErg": "xsd/MiKaDiv_FM_MeldeartErg_1.02.xsd",
+  "MiKaDiv_FM_MeldeartenBasis": "xsd/MiKaDiv_FM_MeldeartenBasis_1.02.xsd",
+  "MiKaDiv_FM_MeldeartenSonder": "xsd/MiKaDiv_FM_MeldeartenSonder_1.02.xsd",
+  "MiKaDiv_FM_Personentypen": "xsd/MiKaDiv_FM_Personentypen_1.02.xsd",
+  "MiKaDiv_FM_Standardtypen": "xsd/MiKaDiv_FM_Standardtypen_1.02.xsd",
+  "din-norm-91379-datatypes": "xsd/din-norm-91379-datatypes.xsd",
+  "ausstellung_steuerbescheinigung": "khb/ausstellung_steuerbescheinigung_v7.pdf",
+  "einzelfragen_datenuebermittlung_de": "khb/einzelfragen_datenuebermittlung_de_v8.pdf",
+  "individual_questions_en": "khb/individual_questions_en_v1.pdf",
+  "khb_mikadiv_fm_anlage_de": "khb/khb_mikadiv_fm_anlage_de_v8.pdf",
+  "khb_mikadiv_fm_anlage_en": "khb/khb_mikadiv_fm_anlage_en_v3.pdf",
+  "khb_mikadiv_fm_de": "khb/khb_mikadiv_fm_de_v9.pdf",
+  "khb_mikadiv_fm_en": "khb/khb_mikadiv_fm_en_v3.pdf",
+  "verfahrensleitende_hinweise": "khb/verfahrensleitende_hinweise_v8.pdf"
+}

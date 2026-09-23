@@ -5,9 +5,13 @@ page — check there first for updates, not any assembled/forwarded copy:
 https://www.bzst.de/DE/Unternehmen/Kapitalertraege/Mitteilungsverfahren_MiKaDiv/Mitteilungsverfahren_MiKaDiv/mitteilungsverfahren_mikadiv_node.html
 
 **Status: committed, current as of the `xsd_mikadiv_fm.zip` v8 /
-`khb_mikadiv_fm.pdf` v9 release fetched 2026-09-14.**
+`khb_mikadiv_fm.pdf` v9 release fetched 2026-09-14. Structured as one
+subdirectory per whole-module snapshot, versioned by the real MiKaDiv-FM
+schema release (currently `1.02`) -- see `_current` and each snapshot's
+own `_manifest.json`. Re-fetching adds a new snapshot directory rather
+than overwriting this one; nothing here is ever deleted.**
 
-## `xsd/` — the real XSD package (from `xsd_mikadiv_fm.zip`, v8)
+## `1.02/xsd/` — the real XSD package (from `xsd_mikadiv_fm.zip`, v8)
 
 Twelve real schema files plus one shared datatype dependency, all
 version `1.02`:
@@ -39,7 +43,7 @@ structural feature not yet modeled by the `xsdo:` vocabulary or the
 equivalence checker's `structural_cases.py`, to be accounted for when
 extraction logic is designed.
 
-## `khb/` — official communication-manual and guidance PDFs
+## `1.02/khb/` — official communication-manual and guidance PDFs
 
 - `khb_mikadiv_fm_de_v9.pdf` / `khb_mikadiv_fm_en_v3.pdf` — the
   Kommunikationshandbuch itself (German/English).
